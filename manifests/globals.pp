@@ -17,7 +17,7 @@ class php::globals (
   $fpm_pid_file = undef,
 ) {
   if $php_version != undef {
-    validate_re($php_version, '^[57].[0-9]')
+    validate_re($php_version, '^[578].[0-9]')
   }
   if $config_root != undef {
     validate_absolute_path($config_root)
@@ -53,7 +53,7 @@ class php::globals (
             $ext_tool_query       = '/usr/sbin/php5query'
             $package_prefix       = 'php5-'
           }
-          /^[57].[0-9]/: {
+          /^[578].[0-9]/: {
             $default_config_root  = "/etc/php/${globals_php_version}"
             $default_fpm_pid_file = "/var/run/php/php${globals_php_version}-fpm.pid"
             $fpm_error_log        = "/var/log/php${globals_php_version}-fpm.log"
@@ -76,7 +76,7 @@ class php::globals (
         }
       } else {
         case $globals_php_version {
-          /^7/: {
+          /^78/: {
             $default_config_root  = "/etc/php/${globals_php_version}"
             $default_fpm_pid_file = "/var/run/php/php${globals_php_version}-fpm.pid"
             $fpm_error_log        = "/var/log/php${globals_php_version}-fpm.log"
