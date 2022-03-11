@@ -3,13 +3,17 @@
 # === Parameters
 #
 # [*max_age*]
-#   Defines number of days after which Composer should be updated
+#   Defines number of days after which Composer should be updated.
+#   This gets overriden if $version is set
+#
+# [*path*]
+#   Holds path to the Composer executable
 #
 # [*source*]
 #   Holds URL to the Composer source file
 #
-# [*path*]
-#   Holds path to the Composer executable
+# [*version*]
+#   Optionally pin Composer to a specific version
 #
 # [*proxy_type*]
 #    proxy server type (none|http|https|ftp)
@@ -27,8 +31,9 @@
 #
 class php::composer::auto_update (
   $max_age,
-  $source,
   $path,
+  $source,
+  $version,
   $proxy_type   = undef,
   $proxy_server = undef,
 ) {
@@ -43,10 +48,17 @@ class php::composer::auto_update (
     $env = [ 'HOME=/root' ]
   }
 
+  if ($version) {
+    warning("Pinning Composer to version ${version} by running 'composer self-update ${version}'")
+    $onlyif = "test `find '${path}'`"
+  } else {
+    $onlyif = "test `find '${path}' -mtime +${max_age}`"
+  }
+
   exec { 'update composer':
-    command     => "${path} --no-interaction --quiet self-update",
+    command     => "${path} --no-interaction --quiet self-update ${version}",
     environment => $env,
-    onlyif      => "test `find '${path}' -mtime +${max_age}`",
+    onlyif      => $onlyif,
     path        => [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin' ],
     require     => [File[$path], Class['::php::cli']],
   }
