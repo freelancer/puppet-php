@@ -23,6 +23,9 @@
 # [*root_group*]
 #   UNIX group of the root user
 #
+# [*version*]
+#   If specified, pins Composer to a specific version
+#
 class php::composer (
   $source       = $::php::params::composer_source,
   $path         = $::php::params::composer_path,
@@ -31,8 +34,8 @@ class php::composer (
   $auto_update  = true,
   $max_age      = $::php::params::composer_max_age,
   $root_group   = $::php::params::root_group,
+  $version      = '',
 ) inherits ::php::params {
-
   if $caller_module_name != $module_name {
     warning('php::composer is private')
   }
@@ -61,6 +64,7 @@ class php::composer (
       path         => $path,
       proxy_type   => $proxy_type,
       proxy_server => $proxy_server,
+      version      => $version,
     }
   }
 }
